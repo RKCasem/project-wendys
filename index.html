@@ -91,7 +91,7 @@
                 <input type="password" id="register-password" name="password" required><br>
                 <label for="register-email">Email:</label>
                 <input type="email" id="register-email" name="email" required><br>
-                <input type="submit" name="register" value="Register">
+                <input type="submit" name="register" value="Register" onclick="return validateEULA();">
             </form>
             <button class="button" id="back-to-login">Back to Login</button>
         </div>
@@ -108,6 +108,18 @@
             document.getElementById('show-register').classList.remove('hidden');
             document.getElementById('register-form').classList.add('hidden');
         });
+
+       
+    function validateEULA() {
+        const eulaCheckbox = document.getElementById('eula');
+        if (!eulaCheckbox.checked) {
+            alert('You must agree to the EULA before registering.');
+            return false;
+        }
+        return true;
+    }
+
+
     </script>
 </body>
 </html>
