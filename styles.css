@@ -1,0 +1,45 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #0e0e0e;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#menuToggle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+aside {
+    width: 220px;
+    padding: 10px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -220px;
+    transition: left 0.3s;
+}
+
+main {
+    padding: 20px;
+    margin-left: 240px;
+    flex-grow: 1;
+    transition: margin-left 0.3s;
+}
+
+footer {
+    width: calc(100% - 220px);
+    left: 220px;
+    transition: left 0.3s;
+}
+
+.content-block {
+    background-color: #6c757d; /* Bootstrap's secondary color */
+    padding: 20px;
+    border-radius: 5px;
+}

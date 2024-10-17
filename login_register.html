@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, black, red);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            margin-bottom: 10px;
+        }
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            padding: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        input[type="submit"]:hover {
+            background-color: darkred;
+        }
+        label {
+            display: block;
+            margin: 5px 0;
+        }
+        .hidden {
+            display: none;
+        }
+        .button {
+            background-color: transparent;
+            color: white;
+            text-align: center;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Login Form</h2>
+        <form id="login-form" action="login_register.php" method="post">
+            <label for="login-email">Email:</label>
+            <input type="email" id="login-email" name="email" required><br>
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="password" required><br>
+            <input type="submit" name="login" value="Login">
+        </form>
+        <button class="button" id="show-register">Not registered yet? Register</button>
+        <div id="register-form" class="hidden">
+            <h2>Registration Form</h2>
+            <form action="login_register.php" method="post">
+                <label for="register-surname">Surname:</label>
+                <input type="text" id="register-surname" name="surname" pattern="[A-Za-z]+" title="Special characters not allowed." required><br>
+                <label for="register-firstname">First Name:</label>
+                <input type="text" id="register-firstname" name="firstname" pattern="[A-Za-z]+" title="Special characters not allowed." required><br>
+                <label for="register-password">Password:</label>
+                <input type="password" id="register-password" name="password" required><br>
+                <label for="register-email">Email:</label>
+                <input type="email" id="register-email" name="email" required><br>
+                <input type="submit" name="register" value="Register">
+            </form>
+            <button class="button" id="back-to-login">Back to Login</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('show-register').addEventListener('click', function() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('show-register').classList.add('hidden');
+            document.getElementById('register-form').classList.remove('hidden');
+        });
+
+        document.getElementById('back-to-login').addEventListener('click', function() {
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('show-register').classList.remove('hidden');
+            document.getElementById('register-form').classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

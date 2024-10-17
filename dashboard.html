@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill n' Chill</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0e0e0e;
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #menuToggle {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        aside {
+            width: 220px;
+            padding: 10px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -220px;
+            transition: left 0.3s;
+        }
+        main {
+            padding: 20px;
+            margin-left: 240px;
+            flex-grow: 1;
+            transition: margin-left 0.3s;
+        }
+        footer {
+            width: calc(100% - 220px);
+            left: 220px;
+            transition: left 0.3s;
+        }
+        .content-block {
+            background-color: #6c757d; /* Bootstrap's secondary color */
+            padding: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-danger text-light p-3">
+        <h1>Bill n' Chill</h1>
+        <button id="menuToggle" class="btn btn-light">&#9776;</button>
+    </header>
+    <aside id="sidebar" class="bg-dark text-light">
+        <ul class="list-unstyled">
+            <li><a href="#dashboard" class="text-light d-block p-2">Dashboard</a></li>
+            <li><a href="#billing" class="text-light d-block p-2">Billing</a></li>
+            <li><a href="#transaction" class="text-light d-block p-2">Transaction</a></li>
+            <li><a href="#account" class="text-light d-block p-2">Account</a></li>
+            <li><a href="#settings" class="text-light d-block p-2">Settings</a></li>
+            <li><button id="upgradeBtn" class="btn btn-danger w-100">Upgrade your SUBSCRIPTION! CLICK ME!!</button></li>
+            <li><button id="logoutBtn" class="btn btn-secondary w-100 mt-3">Logout</button></li>
+        </ul>
+    </aside>
+    <main class="container-fluid">
+        <section id="dashboard" class="mt-3">
+            <h2 class="text-danger">Dashboard</h2>
+            <div class="content-block bg-secondary text-light p-3 mb-3">Content 1</div>
+            <div class="content-block bg-secondary text-light p-3 mb-3">Content 2</div>
+            <div class="content-block bg-secondary text-light p-3 mb-3">Content 3</div>
+        </section>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+            const mainContent = document.querySelector('main');
+            const footer = document.querySelector('footer');
+            const dashboardLink = document.querySelector('#sidebar a[href="#dashboard"]');
+            const logoutButton = document.getElementById('logoutBtn');
+
+            menuToggle.addEventListener('click', function() {
+                toggleSidebar();
+            });
+
+            dashboardLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                toggleSidebar();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                window.scrollTo({
+                    top: targetSection.offsetTop,
+                    behavior: 'smooth'
+                });
+            });
+
+            function toggleSidebar() {
+                if (sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                    sidebar.style.left = '-220px';
+                    mainContent.style.marginLeft = '0';
+                    footer.style.left = '0';
+                } else {
+                    sidebar.classList.add('open');
+                    sidebar.style.left = '0px';
+                    mainContent.style.marginLeft = '220px';
+                    footer.style.left = '220px';
+                }
+            }
+
+            document.getElementById('upgradeBtn').addEventListener('click', function() {
+                alert('Upgrade your subscription to enjoy more features!');
+            });
+
+            logoutButton.addEventListener('click', function() {
+                window.location.href = 'login_register.html';
+            });
+        });
+    </script>
+</body>
+</html>
