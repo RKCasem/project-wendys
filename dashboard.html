@@ -8,119 +8,220 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #0e0e0e;
+            background-color: #111;
             margin: 0;
             padding: 0;
             color: #fff;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
         }
-        #menuToggle {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
+
+        /* Sidebar */
         aside {
-            width: 220px;
-            padding: 10px;
+            width: 240px;
             height: 100vh;
+            background-color: #1c1c1c;
+            padding: 20px;
             position: fixed;
             top: 0;
-            left: -220px;
-            transition: left 0.3s;
+            left: -240px; /* Hidden by default */
+            transition: left 0.3s ease; /* Animation for sliding in/out */
+            z-index: 999;
         }
-        main {
-            padding: 20px;
-            margin-left: 240px;
+
+        .logo {
+            cursor: pointer;
+        }
+
+        .sidebar-menu ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu a {
+            text-decoration: none;
+            color: #fff;
+            display: block;
+            padding: 10px 0;
+            font-size: 18px;
+        }
+
+        .sidebar-menu a:hover {
+            color: #ff4747;
+        }
+
+        .subscription-btn {
+            background-color: #ff4747;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 8px;
+            color: #fff;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .subscription-btn:hover {
+            background-color: #e44040;
+        }
+
+        /* Header */
+        header {
+            background-color: #0d0d0d;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        /* Arrow for toggle */
+        .arrow {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid white; /* Arrow pointing up */
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* Rotate arrow when sidebar is open */
+        .sidebar-open .arrow {
+            transform: rotate(90deg); /* Arrow pointing to the left */
+        }
+
+        /* Header Right (stretches to fill the available space) */
+        .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
             flex-grow: 1;
-            transition: margin-left 0.3s;
+            padding-right: 20px;
         }
-        footer {
-            width: calc(100% - 220px);
-            left: 220px;
-            transition: left 0.3s;
+
+        .header-right input[type="text"] {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: none;
+            margin-right: 20px;
+            background-color: #333;
+            color: #fff;
         }
+
+        .header-right .icon {
+            color: white;
+            font-size: 20px;
+            margin-right: 20px;
+            cursor: pointer;
+        }
+
+        .header-right img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 80px; /* To prevent content from being hidden behind the header */
+            background-color: #2c2c2c;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease; /* Smooth transition */
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 20px;
+        }
+
         .content-block {
-            background-color: #6c757d; /* Bootstrap's secondary color */
+            background-color: #333;
             padding: 20px;
-            border-radius: 5px;
+            border-radius: 10px;
+        }
+
+        .content-block.red {
+            background-color: #ff4747;
+        }
+
+        /* When the sidebar is open */
+        .sidebar-open aside {
+            left: 0; /* Sidebar slides into view */
+        }
+
+        .sidebar-open main {
+            margin-left: 240px; /* Main content shifts to the right */
+        }
+
+        .sidebar-open header {
+            padding-left: 270px; /* Header shifts to accommodate sidebar */
         }
     </style>
 </head>
 <body>
-    <header class="bg-danger text-light p-3">
-        <h1>Bill n' Chill</h1>
-        <button id="menuToggle" class="btn btn-light">&#9776;</button>
-    </header>
-    <aside id="sidebar" class="bg-dark text-light">
-        <ul class="list-unstyled">
-            <li><a href="#dashboard" class="text-light d-block p-2">Dashboard</a></li>
-            <li><a href="#billing" class="text-light d-block p-2">Billing</a></li>
-            <li><a href="#transaction" class="text-light d-block p-2">Transaction</a></li>
-            <li><a href="#account" class="text-light d-block p-2">Account</a></li>
-            <li><a href="#settings" class="text-light d-block p-2">Settings</a></li>
-            <li><button id="upgradeBtn" class="btn btn-danger w-100">Upgrade your SUBSCRIPTION! CLICK ME!!</button></li>
-            <li><button id="logoutBtn" class="btn btn-secondary w-100 mt-3">Logout</button></li>
-        </ul>
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div class="logo">
+            <img src="mobile-logo.png" alt="Bill n' Chill Logo" style="width: 50px; display: inline-block; vertical-align: middle;">
+            <h2 style="display: inline-block; margin-left: 10px; vertical-align: middle; font-size: 20px;">Bill n' Chill</h2>
+        </div>
+        
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">Billing</a></li>
+                <li><a href="#">Transaction</a></li>
+                <li><a href="#">Account</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </div>
+        <button class="subscription-btn">Upgrade your SUBSCRIPTION! CLICK ME!!</button>
     </aside>
-    <main class="container-fluid">
-        <section id="dashboard" class="mt-3">
-            <h2 class="text-danger">Dashboard</h2>
-            <div class="content-block bg-secondary text-light p-3 mb-3">Content 1</div>
-            <div class="content-block bg-secondary text-light p-3 mb-3">Content 2</div>
-            <div class="content-block bg-secondary text-light p-3 mb-3">Content 3</div>
-        </section>
+
+    <!-- Header -->
+    <header>
+        <!-- Header Logo (acts as toggle for sidebar) -->
+        <div class="logo" id="headerLogoToggle">
+            <div class="arrow"></div> <!-- Arrow Icon for the header -->
+        </div>
+
+        <!-- Right Side: Search, Notification, User Avatar -->
+        <div class="header-right">
+            <input type="text" placeholder="Search here">
+            <span class="icon">&#128276;</span> <!-- Notifications bell icon -->
+            <img src="user-avatar.png" alt="User Avatar">
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="dashboard-grid">
+            <div class="content-block"></div>
+            <div class="content-block red"></div>
+            <div class="content-block red"></div>
+            <div class="content-block"></div>
+            <div class="content-block red"></div>
+        </div>
     </main>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebar = document.getElementById('sidebar');
-            const menuToggle = document.getElementById('menuToggle');
-            const mainContent = document.querySelector('main');
-            const footer = document.querySelector('footer');
-            const dashboardLink = document.querySelector('#sidebar a[href="#dashboard"]');
-            const logoutButton = document.getElementById('logoutBtn');
+        document.addEventListener('DOMContentLoaded', function () {
+            const headerLogoToggle = document.getElementById('headerLogoToggle');
+            const body = document.body;
 
-            menuToggle.addEventListener('click', function() {
-                toggleSidebar();
-            });
-
-            dashboardLink.addEventListener('click', function(event) {
-                event.preventDefault();
-                toggleSidebar();
-                const targetId = this.getAttribute('href').substring(1);
-                const targetSection = document.getElementById(targetId);
-                window.scrollTo({
-                    top: targetSection.offsetTop,
-                    behavior: 'smooth'
-                });
-            });
-
-            function toggleSidebar() {
-                if (sidebar.classList.contains('open')) {
-                    sidebar.classList.remove('open');
-                    sidebar.style.left = '-220px';
-                    mainContent.style.marginLeft = '0';
-                    footer.style.left = '0';
-                } else {
-                    sidebar.classList.add('open');
-                    sidebar.style.left = '0px';
-                    mainContent.style.marginLeft = '220px';
-                    footer.style.left = '220px';
-                }
-            }
-
-            document.getElementById('upgradeBtn').addEventListener('click', function() {
-                alert('Upgrade your subscription to enjoy more features!');
-            });
-
-            logoutButton.addEventListener('click', function() {
-                window.location.href = 'index.html';
+            // Toggle the sidebar when the logo in the header is clicked
+            headerLogoToggle.addEventListener('click', function () {
+                body.classList.toggle('sidebar-open');
             });
         });
     </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
