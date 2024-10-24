@@ -45,63 +45,44 @@
             left: 20px;
             z-index: 1000;
         }
-
         .logo img {
             max-width: 150px;
             height: auto;
         }
-
         .contact-us {
-    position: absolute;
-    top: 20px;
-    right: 75px; /* Changed from 20px to 30px to move it 10 pixels to the left */
-    font-size: 16px;
-    color: white;
-    text-decoration: none;
-    background-color: transparent;
-    border: 2px solid white;
-    padding: 10px 20px;
-    cursor: pointer;
-    z-index: 1000; /* Ensure it appears on top */
-}
-
-
+            position: absolute;
+            top: 20px;
+            right: 75px;
+            font-size: 16px;
+            color: white;
+            text-decoration: none;
+            background-color: transparent;
+            border: 2px solid white;
+            padding: 10px 20px;
+            cursor: pointer;
+            z-index: 1000;
+        }
         .contact-us:hover {
             background-color: white;
             color: red;
             border-color: red;
         }
-
         .card {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
             padding: 20px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(10px);
-            max-width: 900px;
+            max-width: 400px;
             width: 100%;
             display: flex;
             justify-content: space-between;
             margin-top: 50px;
             position: relative;
         }
-
         .form-container {
             max-width: 400px;
             width: 100%;
-        }
-        .qr-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(255, 255, 255, 0.3);
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .qr-container img {
-            max-width: 200px;
-            height: auto;
         }
         h2 {
             margin-bottom: 10px;
@@ -152,15 +133,14 @@
     <!-- Corner Decor -->
     <div class="corner-decor bottom-left"></div>
     <div class="corner-decor top-right"></div>
-    
+
     <!-- Logo -->
     <div class="logo">
         <img src="mobile-logo.png" alt="Bill n' Chill Logo">
     </div>
-    
-    <!-- Contact Us link -->
-    <a href="contact.html" class="contact-us">Contact Us</a>
 
+    <!-- Contact Us link -->
+    <a href="contact.php" class="contact-us">Contact Us</a>
     <div class="card">
         <div class="form-container">
             <!-- Login Form -->
@@ -175,7 +155,6 @@
                 </form>
                 <button class="button" id="show-register">Not registered yet? Register</button>
             </div>
-
             <!-- Registration Form -->
             <div id="register-form-container" class="hidden">
                 <h2>Registration Form</h2>
@@ -193,26 +172,16 @@
                 <button class="button" id="back-to-login">Already Registered? Login</button>
             </div>
         </div>
-
-        <!-- QR code container -->
-        <div class="qr-container">
-            <h3>Log in with QR Code</h3>
-            <img src="your-qr-code.png" alt="QR Code">
-            <p>Scan this with Bill n' Chill App to login instantly.</p>
-        </div>
     </div>
-
     <script>
         document.getElementById('show-register').addEventListener('click', function() {
             document.getElementById('login-form-container').classList.add('hidden');
             document.getElementById('register-form-container').classList.remove('hidden');
         });
-
         document.getElementById('back-to-login').addEventListener('click', function() {
             document.getElementById('login-form-container').classList.remove('hidden');
             document.getElementById('register-form-container').classList.add('hidden');
         });
-
         function validateEULA() {
             const eulaCheckbox = document.getElementById('preference');
             if (!eulaCheckbox.checked) {
