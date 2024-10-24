@@ -199,12 +199,8 @@
 
     <!-- Main Content -->
     <main>
-        <div class="dashboard-grid">
-            <div class="content-block"></div>
-            <div class="content-block red"></div>
-            <div class="content-block red"></div>
-            <div class="content-block"></div>
-            <div class="content-block red"></div>
+        <div class="dashboard-grid" id="dashboard">
+            <!-- Cards will be dynamically generated here from the API -->
         </div>
     </main>
 
@@ -217,6 +213,31 @@
             headerLogoToggle.addEventListener('click', function () {
                 body.classList.toggle('sidebar-open');
             });
+
+         // Fetch finance-related news from NewsAPI
+         fetch('https://newsapi.org/v2/everything?q=finance&apiKey=91e4cec7ae99466bb4b50dd8788291c1')
+            .then(response => response.json())
+            .then(data => {
+                let articles = data.articles.slice(0, 25); // Fetch 5 articles
+                let content = '';
+
+                // Loop through articles to generate cards dynamically
+                articles.forEach(article => {
+                    content += `
+                        <div class="content-block card">
+                            ${article.urlToImage ? `<img src="${article.urlToImage}" class="card-img-top" alt="${article.title}" style="border-radius: 8px 8px 0 0; height: 180px; object-fit: cover;">` : ''}
+                            <div class="card-body" style="padding: 15px;">
+                                <h4 class="card-title" style="font-size: 20px; font-weight: bold; color: #ff4747;">${article.title}</h4>
+                                <p class="card-text" style="color: #ccc; font-size: 14px;">${article.description}</p>
+                                <a href="${article.url}" target="_blank" class="btn btn-read-more" style="background-color: #ff4747; color: #fff; padding: 10px 15px; border-radius: 20px; text-decoration: none;">Read more</a>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                dashboard.innerHTML = content;
+            })
+            .catch(error => console.error('Error fetching news:', error));
         });
     </script>
 
