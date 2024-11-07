@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['register'])) {
         // Registration process
         $surname = $_POST['surname'];
-        $firstname = $_POST['firstname'];
+        $firstname = $_POST['firstname']; 
         $password = $_POST['password'];
         $email = $_POST['email'];
 
