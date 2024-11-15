@@ -1,0 +1,54 @@
+/* Basic styling */
+body { font-family: 'Arial', sans-serif; background-color: #111; color: #fff; display: flex; }
+
+/* Sidebar styling */
+#sidebar {
+    width: 250px;
+    background-color: #222;
+    padding: 15px;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+#sidebar h2 { color: #ff4747; font-size: 24px; text-align: center; }
+#sidebar a { color: #ddd; padding: 10px 15px; display: block; text-decoration: none; font-size: 18px; }
+#sidebar a:hover { background-color: #444; color: #fff; }
+
+/* Main content */
+main {
+    margin-left: 270px;
+    padding: 20px;
+    flex-grow: 1;
+}
+
+/* Filter button styles */
+.btn-outline-light { margin: 5px; color: #fff; border-color: #ff4747; }
+.btn-outline-light:hover { background-color: #ff4747; color: #fff; }
+
+/* Article block design */
+.content-block {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px 0;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+.content-block h5 { color: #ff4747; font-size: 20px; }
+.content-block img { width: 100%; border-radius: 8px; margin-bottom: 10px; }
+.content-block p { color: #ddd; font-size: 16px; }
+
+/* Loader design */
+.loader {
+    border: 8px solid rgba(255, 255, 255, 0.3);
+    border-top: 8px solid #ff4747;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* Pagination */
+.pagination-button { margin: 5px; padding: 8px 15px; background-color: white; color: white; border: none; border-radius: 5px; }
+.pagination-button.active { background-color: #e44040; }
+.pagination-button:hover { background-color: #e44040; }
