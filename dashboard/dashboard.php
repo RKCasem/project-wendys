@@ -6,141 +6,138 @@
     <title>Bill n' Chill</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-    /* General body styles */
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #111;
-        color: #fff;
-        display: flex;
-        transition: margin-left 0.3s ease-in-out;
-    }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #111;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            margin-left: 0;
+            padding: 20px;
+            transition: margin-left 0.3s ease-in-out;
+        }
 
-    /* Sidebar */
-    nav#sidebar {
-        width: 250px;
-        background-color: #222;
-        padding: 15px;
-        position: fixed;
-        height: 100%;
-        overflow: auto;
-        left: 0; /* Sidebar is initially visible */
-        top: 0;
-        transition: left 0.3s ease-in-out;
-    }
+        #menu {
+            z-index: 2;
+        }
 
-    /* Sidebar title */
-    nav#sidebar h2 {
-        color: #ff4747;
-        font-size: 24px;
-        text-align: center;
-    }
+        #menu-bar {
+            width: 45px;
+            height: 70px;
+            margin: 0 auto;
+            position: relative;
+            top: 15px; /* Adjust this value to move it down */
+            left: 20px;
+            cursor: pointer;
+        }
 
-    /* Sidebar links */
-    nav#sidebar a {
-        color: #ddd;
-        padding: 10px 15px;
-        display: block;
-        text-decoration: none;
-        font-size: 18px;
-        cursor: pointer;
-    }
+        .bar {
+            height: 5px;
+            width: 100%;
+            background-color: #DC052D;
+            display: block;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
 
-    nav#sidebar a:hover {
-        background-color: #444;
-        color: #fff;
-    }
+        #bar1 {
+            transform: translateY(-4px);
+        }
 
-    /* Hamburger icon (default visible for all devices with screen size smaller than 1024px) */
-    #hamburger-icon {
-        display: none; /* Hidden by default */
-        font-size: 30px;
-        cursor: pointer;
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        z-index: 999;
-        color: white;
-    }
+        #bar3 {
+            transform: translateY(4px);
+        }
 
-    /* Responsive styles for small screens (below 1024px) */
-    @media (max-width: 1024px) {
-        /* Show the hamburger icon for smaller screens */
-        #hamburger-icon {
+        .nav {
+            transition: 0.3s ease;
+            display: none;
+        }
+
+        .nav ul {
+            padding: 0 22px;
+        }
+
+        .nav li {
+            list-style: none;
+            padding: 12px 0;
+        }
+
+        .nav li a {
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+        }
+
+        .nav li a:hover {
+            font-weight: bold;
+        }
+
+        .menu-bg, #menu {
+            top: 0;
+            left: 0;
+            position: absolute;
+        }
+
+        .menu-bg {
+            z-index: 1;
+            width: 0;
+            height: 0;
+            margin: 30px 0 20px 20px;
+            background: radial-gradient(circle, #DC052D, #DC052D);
+            border-radius: 50%;
+            transition: 0.3s ease;
+        }
+
+        .change {
             display: block;
         }
 
-        /* Initially hide the sidebar on small screens */
-        nav#sidebar {
-            width: 250px;
-            left: -250px; /* Sidebar hidden initially */
+        .change .bar {
+            background-color: white;
         }
 
-        /* Adjust body layout when sidebar is hidden */
-        body {
-            margin-left: 0;
-        }
-    }
-
-    /* Fully responsive for smaller screens (below 768px) */
-    @media (max-width: 768px) {
-        nav#sidebar {
-            width: 100%; /* Sidebar takes up the entire screen width */
+        .change #bar1 {
+            transform: translateY(4px) rotateZ(-45deg);
         }
 
-        body {
-            margin-left: 0;
+        .change #bar2 {
+            opacity: 0;
         }
-    }
 
+        .change #bar3 {
+            transform: translateY(-6px) rotateZ(45deg);
+        }
 
-
+        .change-bg {
+            width: 520px;
+            height: 460px;
+            transform: translate(-60%,-30%);
+        }
 
         .btn-outline-light {
             margin: 5px;
             color: #fff;
             border-color: #ff4747;
         }
+
         .btn-outline-light:hover {
             background-color: #ff4747;
             color: #fff;
         }
-        /* Article Styling */
-        .content-block {
-            background-color: #333;
+
+        /* Consistent Section Styling */
+        .content-section {
+            display: none;
             padding: 20px;
+            background-color: #333;
             border-radius: 10px;
-            margin: 10px 0;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-wrap: wrap;
+            margin-top: 20px;
         }
-        .content-block h5 {
-            color: #ff4747;
-            font-size: 20px;
-            margin-bottom: 15px;
+
+        .content-section.active {
+            display: block;
         }
-        .content-block img {
-            width: 200px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-right: 20px;
-        }
-        .content-block .content-text {
-            flex: 1;
-        }
-        .content-block p {
-            color: #ddd;
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-        .content-block a {
-            background-color: #ff4747;
-            padding: 8px 15px;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
+
         /* Loader */
         .loader {
             border: 8px solid rgba(255, 255, 255, 0.3);
@@ -150,10 +147,12 @@
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
         /* Pagination */
         .pagination-button {
             margin: 5px;
@@ -164,30 +163,67 @@
             border-radius: 5px;
             cursor: pointer;
         }
+
         .pagination-button.active,
         .pagination-button:hover {
             background-color: #ff4747;
         }
+
+        .content-block {
+        display: flex;
+        margin-bottom: 15px;
+        background-color: #444;
+        border-radius: 8px;
+        padding: 15px;
+        align-items: center;
+        position: relative; /* Required to use top property */
+        top: 70px; /* Increase this value to move it down */
+    }
+
+
+        .content-block img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+        .content-text {
+            flex-grow: 1;
+        }
+
+        .content-text h5 {
+            margin: 0 0 10px;
+        }
+
+        .content-text p {
+            margin: 0 0 10px;
+        }
+
+        .content-text a {
+            color: #ff4747;
+        }
     </style>
 </head>
 <body>
-<span id="hamburger-icon" onclick="toggleSidebar()">&#9776;</span>
-
-    <nav id="sidebar">
-        <h2>Bill n' Chill</h2>
-        <a href="javascript:void(0);" onclick="showSection('dashboard')">Dashboard</a>
-        <a href="javascript:void(0);" onclick="toggleSubmenu('billing-submenu')">Billing Information</a>
-        <div id="billing-submenu" class="submenu" style="display: none;">
-            <a href="javascript:void(0);" onclick="showSection('transactions')">Transactions</a>
-            <a href="javascript:void(0);" onclick="showSection('subscription')">Subscription</a>
+    <div id="menu">
+        <div id="menu-bar" onclick="menuOnClick()">
+            <div id="bar1" class="bar"></div>
+            <div id="bar2" class="bar"></div>
+            <div id="bar3" class="bar"></div>
         </div>
-        <a href="javascript:void(0);" onclick="showSection('account-settings')">Account Settings</a>
-        <a href="javascript:void(0);" onclick="showSection('logout')">Log Out</a>
-    </nav>
-
+        <nav class="nav" id="nav">
+            <ul>
+                <li><a href="#dashboard" onclick="showSection('dashboard')">Home</a></li>
+                <li><a href="#transactions" onclick="showSection('transactions')">Billing Information</a></li>
+                <li><a href="#account-settings" onclick="showSection('account-settings')">Account Settings</a></li>
+                <li><a href="#logout" onclick="showSection('logout')">Log Out</a></li>
+            </ul>
+        </nav> 
+    </div>
     <main>
-        <!-- Dashboard content -->
-        <section id="dashboard" class="content-section" style="display: block;">
+        <section id="dashboard" class="content-section active">
             <header><h2>Dashboard</h2></header>
             <div id="filters" class="text-center my-3">
                 <button class="btn btn-outline-light" onclick="filterNews('finance')">Finance</button>
@@ -199,31 +235,10 @@
             <div id="pagination" class="text-center my-4"></div>
         </section>
 
-        <!-- Transactions content (hidden by default) -->
-        <section id="transactions" class="content-section" style="display: none;">
-            <header><h2>Transactions</h2></header>
-            <p>Here you can view all your transactions.</p>
-        </section>
+        <!-- Other sections -->
 
-        <!-- Subscription content (hidden by default) -->
-        <section id="subscription" class="content-section" style="display: none;">
-            <header><h2>Subscription</h2></header>
-            <p>Here you can manage your subscription plans.</p>
-        </section>
-
-        <!-- Account Settings content (hidden by default) -->
-        <section id="account-settings" class="content-section" style="display: none;">
-            <header><h2>Account Settings</h2></header>
-            <p>Here you can update your account settings.</p>
-        </section>
-
-        <!-- Log Out content (hidden by default) -->
-        <section id="logout" class="content-section" style="display: none;">
-            <header><h2>Log Out</h2></header>
-            <p>Are you sure you want to log out?</p>
-            <button onclick="logout()">Confirm Log Out</button>
-        </section>
     </main>
+    <div class="menu-bg" id="menu-bg"></div>
 
     <script>
         let articles = [];
@@ -231,138 +246,180 @@
         let currentPage = 1;
         const pageSize = 5;
 
-        // Fetch articles for the selected category
         async function fetchNews(category) {
-            document.getElementById('news-container').innerHTML = '<div class="loader"></div>';
-            try {
-                const response = await fetch(`https://newsapi.org/v2/everything?q=${category}&apiKey=2490b1f670994bcab9e3f40524b6110b`);
-                const data = await response.json();
-                articles = data.articles.filter(article => article.urlToImage && article.description && article.url);
-                renderNews();
-            } catch {
-                document.getElementById('news-container').innerHTML = '<div>Error fetching news. Please try again later.</div>';
+        document.getElementById('news-container').innerHTML = '<div class="loader"></div>';
+        try {
+            const response = await fetch(`https://newsapi.org/v2/everything?q=${category}&apiKey=2490b1f670994bcab9e3f40524b6110b`);
+            const data = await response.json();
+            articles = data.articles || []; // Ensure articles is an empty array if no articles found
+
+            // Filter out invalid articles directly here
+            articles = articles.filter(article => article.title && article.description && article.url && article.urlToImage);
+
+            // If no valid articles are found, replace them with a custom empty article
+            if (articles.length === 0) {
+                console.warn('No valid articles found.');
+                articles = [{ title: 'No articles available', description: 'Sorry, no articles were found in this category.', url: '#', urlToImage: 'https://via.placeholder.com/120' }];
             }
+
+            displayNews();
+            setupPagination();
+        } catch (error) {
+            console.error('Error fetching articles:', error);
+
+            // In case of an error, handle it gracefully by not showing fallback articles
+            articles = [{ title: 'Error loading articles', description: 'Sorry, there was an issue fetching the news.', url: '#', urlToImage: 'https://via.placeholder.com/120' }];
+            
+            displayNews();
+            setupPagination();
         }
+    }
 
-        // Render the articles
-        function renderNews() {
-            const newsContainer = document.getElementById('news-container');
-            const start = (currentPage - 1) * pageSize;
-            const currentArticles = articles.slice(start, start + pageSize);
 
-            newsContainer.innerHTML = currentArticles.map(({ urlToImage, title, description, url }) => `
-                <div class="content-block">
-                    <img src="${urlToImage || 'https://via.placeholder.com/200x120'}" alt="${title}">
+        function displayNews() {
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            let articlesToDisplay = articles.slice(startIndex, endIndex);
+
+            // Replace missing or invalid articles with the next valid one
+            articlesToDisplay = articlesToDisplay.map(article => {
+                if (!article.title || !article.description || !article.url || !article.urlToImage) {
+                    // Replace with the next valid article if the current one is missing critical data
+                    return getNextValidArticle();
+                }
+                return article;
+            });
+
+            const container = document.getElementById('news-container');
+            container.innerHTML = ''; // Clear previous articles
+
+            articlesToDisplay.forEach(article => {
+                const articleDiv = document.createElement('div');
+                articleDiv.classList.add('content-block');
+                
+                const imageUrl = article.urlToImage || 'https://via.placeholder.com/120'; // Placeholder image if no image found
+                const articleTitle = article.title;
+                const articleDescription = article.description;
+
+                articleDiv.innerHTML = `
+                    <img src="${imageUrl}" alt="Article Image" onerror="this.onerror=null;this.src='https://via.placeholder.com/120';">
                     <div class="content-text">
-                        <h5>${title}</h5>
-                        <p>${description}</p>
-                        <a href="${url}" target="_blank">Read More</a>
+                        <h5>${articleTitle}</h5>
+                        <p>${articleDescription}</p>
+                        <a href="${article.url}" target="_blank">Read more</a>
                     </div>
-                </div>
-            `).join('');
-
-            renderPagination();
+                `;
+                container.appendChild(articleDiv);
+            });
         }
 
-        // Render pagination controls
-        function renderPagination() {
-            const paginationContainer = document.getElementById('pagination');
-            const pageCount = Math.ceil(articles.length / pageSize);
-            paginationContainer.innerHTML = '';
-
-            let startPage, endPage;
-
-            // If there are too many pages, display a range with ellipses
-            if (pageCount <= 5) {
-                // Show all pages if the total pages are 5 or fewer
-                startPage = 1;
-                endPage = pageCount;
-            } else {
-                // Show the first few pages, the last few pages, and an ellipsis in the middle
-                startPage = Math.max(1, currentPage - 2);
-                endPage = Math.min(pageCount, currentPage + 2);
-
-                if (startPage > 1) {
-                    paginationContainer.innerHTML += `<button class="pagination-button" onclick="goToPage(1)">1</button>`;
-                    if (startPage > 2) {
-                        paginationContainer.innerHTML += `<span class="pagination-button">...</span>`;
-                    }
+        function getNextValidArticle() {
+            // Get the next valid article from the articles array
+            for (let i = 0; i < articles.length; i++) {
+                const article = articles[i];
+                if (article.title && article.description && article.url && article.urlToImage) {
+                    return article;
                 }
+            }
+            // If no valid article is found, return an empty article (or some default behavior)
+            return { title: 'No valid article available', description: 'Sorry, there was an issue loading the article.', url: '#', urlToImage: 'https://via.placeholder.com/120' };
+        }
 
-                for (let i = startPage; i <= endPage; i++) {
-                    paginationContainer.innerHTML += `<button class="pagination-button ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-                }
 
-                if (endPage < pageCount) {
-                    if (endPage < pageCount - 1) {
-                        paginationContainer.innerHTML += `<span class="pagination-button">...</span>`;
-                    }
-                    paginationContainer.innerHTML += `<button class="pagination-button" onclick="goToPage(${pageCount})">${pageCount}</button>`;
+
+        function setupPagination() {
+
+            const totalPages = Math.ceil(articles.length / pageSize);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = ''; // Clear previous pagination buttons
+
+            const maxPagesToShow = 7; // Maximum number of page buttons to show before ellipsis
+
+            // Always show the first page and the last page
+            let startPage = 1;
+            let endPage = totalPages;
+
+            // Check if the total pages exceed the maximum pages to show
+            if (totalPages > maxPagesToShow) {
+                // If the current page is near the beginning or end, adjust the range to show
+                if (currentPage <= maxPagesToShow - 3) {
+                    endPage = maxPagesToShow - 1; // Show first 7 pages
+                } else if (currentPage >= totalPages - 3) {
+                    startPage = totalPages - maxPagesToShow + 2; // Show last 7 pages
+                } else {
+                    startPage = currentPage - 3; // Show pages around the current page
+                    endPage = currentPage + 3;
                 }
+            }
+
+            // Create the page buttons (1 to 7, with ellipsis if needed)
+            for (let i = startPage; i <= endPage; i++) {
+                const button = document.createElement('button');
+                button.classList.add('pagination-button');
+                button.textContent = i;
+                button.onclick = () => goToPage(i);
+                if (i === currentPage) button.classList.add('active');
+                pagination.appendChild(button);
+            }
+
+            // Add the first page and ellipsis if necessary
+            if (startPage > 1) {
+                const ellipsis = document.createElement('span');
+                ellipsis.textContent = '...';
+                pagination.insertBefore(ellipsis, pagination.firstChild);
+            }
+
+            // Add the last page and ellipsis if necessary
+            if (endPage < totalPages) {
+                const ellipsis = document.createElement('span');
+                ellipsis.textContent = '...';
+                pagination.appendChild(ellipsis);
+            }
+
+            // Add the last page button
+            if (endPage < totalPages) {
+                const lastButton = document.createElement('button');
+                lastButton.classList.add('pagination-button');
+                lastButton.textContent = totalPages;
+                lastButton.onclick = () => goToPage(totalPages);
+                pagination.appendChild(lastButton);
             }
         }
 
 
-        // Filter articles by category
+
+        function goToPage(page) {
+            currentPage = page;
+            displayNews();
+            setupPagination();
+        }
+
         function filterNews(category) {
             currentCategory = category;
             currentPage = 1;
             fetchNews(category);
         }
 
-        // Change page
-        function goToPage(page) {
-            currentPage = page;
-            renderNews();
-        }
-
-        // Log out functionality
-        function logout() {
-            alert('You have been logged out.');
-        }
-
-        // Initial fetch for news
+        // Initialize with default category
         fetchNews(currentCategory);
-        // Toggle sidebar visibility
-                function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const isSidebarVisible = sidebar.style.left === '0px';
-            if (isSidebarVisible) {
-                sidebar.style.left = '-250px'; // Hide sidebar
-                document.body.style.marginLeft = '0'; // Adjust body margin
-            } else {
-                sidebar.style.left = '0px'; // Show sidebar
-                document.body.style.marginLeft = '250px'; // Adjust body margin
-            }
+        
+        function showSection(section) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
         }
-    // Function to toggle the sidebar visibility
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const isSidebarVisible = sidebar.style.left === '0px';
-        if (isSidebarVisible) {
-            sidebar.style.left = '-250px'; // Hide sidebar
-            document.body.style.marginLeft = '0'; // Reset body margin
-        } else {
-            sidebar.style.left = '0px'; // Show sidebar
-            document.body.style.marginLeft = '250px'; // Push body content to the right
+
+        function menuOnClick() {
+            const menu = document.getElementById("nav");
+            const menuBar = document.getElementById("menu-bar");
+            const menuBg = document.getElementById("menu-bg");
+
+            menu.classList.toggle("change");
+            menuBar.classList.toggle("change");
+            menuBg.classList.toggle("change-bg");
+            menu.style.display = menu.classList.contains("change") ? "block" : "none";
         }
-    }
-
-    // Function to show the section content
-    function showSection(sectionId) {
-        // Hide all sections
-        document.querySelectorAll('.content-section').forEach(section => section.style.display = 'none');
-        // Show the selected section
-        document.getElementById(sectionId).style.display = 'block';
-    }
-
-    // Toggle submenu visibility
-    function toggleSubmenu(id) {
-        const submenu = document.getElementById(id);
-        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
-    }
-
-
     </script>
 </body>
 </html>
