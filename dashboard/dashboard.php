@@ -16,21 +16,46 @@
             padding: 20px;
             transition: margin-left 0.3s ease-in-out;
         }
-
         #menu {
+            position: fixed; /* Keep the menu fixed */
+            top: 50%; /* Center vertically within the viewport */
+            left: 20px; /* Align slightly from the left */
+            transform: translateY(30%); /* Adjust position for accurate centering */
             z-index: 2;
         }
 
         #menu-bar {
-            width: 45px;
-            height: 70px;
-            margin: 0 auto;
-            position: relative;
-            top: 15px; /* Adjust this value to move it down */
-            left: 20px;
+            width: 50px;
+            height: 40px;
+            margin-left: 25px;
+            margin-top: 10px; /* Remove extra margin to prevent offset */
             cursor: pointer;
         }
+        .menu-bg {
+            position: fixed;
+            top: 50%; /* Match the menu's vertical alignment */
+            left: 50px;
+            transform: translateY(-30%);
+            width: 0; /* Initial size */
+            height: 0; /* Initial size */
+            background: radial-gradient(circle, #DC052D, #DC052D);
+            border-radius: 100%;
+            z-index: 1;
+            transition: 0.3s ease;
+        }
 
+        .menu-bg.change-bg {
+            width: 800px; /* Increased size */
+            height: 550px; /* Increased size */
+            transform: translate(-70%, -12%); /* Adjust centering as needed */
+        }
+
+
+        .menu-bg, #menu {
+            top: 0;
+            left: 0;
+            position: absolute;
+        }        
         .bar {
             height: 5px;
             width: 100%;
@@ -70,22 +95,6 @@
 
         .nav li a:hover {
             font-weight: bold;
-        }
-
-        .menu-bg, #menu {
-            top: 0;
-            left: 0;
-            position: absolute;
-        }
-
-        .menu-bg {
-            z-index: 1;
-            width: 0;
-            height: 0;
-            margin: 30px 0 20px 20px;
-            background: radial-gradient(circle, #DC052D, #DC052D);
-            border-radius: 50%;
-            transition: 0.3s ease;
         }
 
         .change {
@@ -131,7 +140,7 @@
             padding: 20px;
             background-color: #333;
             border-radius: 10px;
-            margin-top: 20px;
+            margin-top: 50px;
         }
 
         .content-section.active {
@@ -169,21 +178,19 @@
             background-color: #ff4747;
         }
 
+        /* Consistent article block layout */
         .content-block {
-        display: flex;
-        margin-bottom: 15px;
-        background-color: #444;
-        border-radius: 8px;
-        padding: 15px;
-        align-items: center;
-        position: relative; /* Required to use top property */
-        top: 70px; /* Increase this value to move it down */
-    }
-
+            display: flex;
+            margin-bottom: 15px;
+            background-color: #444;
+            border-radius: 8px;
+            padding: 15px;
+            align-items: center;
+        }
 
         .content-block img {
             width: 120px;
-            height: 120px;
+            height: 130px;
             object-fit: cover;
             border-radius: 8px;
             margin-right: 15px;
@@ -275,7 +282,7 @@
         }
     }
 
-
+ 
         function displayNews() {
 
             const startIndex = (currentPage - 1) * pageSize;
