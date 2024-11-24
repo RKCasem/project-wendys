@@ -1,8 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mydatabase";
+$servername = "localhost"; // Default for XAMPP
+$username = "root";        // Default for XAMPP
+$password = "";            // Default password
+$dbname = "crud_app";      // Database name
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
