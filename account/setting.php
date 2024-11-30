@@ -1,85 +1,4 @@
-<?php
-// Include database connection
-include('../db.php');  // Make sure db.php contains the correct PDO connection
 
-// Function to fetch the user data
-function fetchUserData($email, $conn) {
-    try {
-        // Prepare the SELECT query
-        $stmt = $conn->prepare("SELECT id, email, firstname, surname, password FROM users WHERE email = :email");
-
-        if (!$stmt) {
-            throw new Exception("Failed to prepare the SQL statement.");
-        }
-
-        // Bind the parameter
-        $stmt->bindParam(':email', $email);
-
-        // Execute the query
-        if ($stmt->execute()) {
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $user;
-        } else {
-            throw new Exception("Failed to execute query.");
-        }
-    } catch (Exception $e) {
-        echo "Error fetching user data: " . $e->getMessage();
-        return null;
-    }
-}
-
-// Function to update account settings
-function updateAccountSettings($email, $birthday, $location, $age, $birthmonth, $mobilenumber, $conn) {
-    try {
-        // Prepare the UPDATE query
-        $stmt = $conn->prepare("UPDATE account_settings SET birthday = :birthday, location = :location, 
-                                age = :age, birthmonth = :birthmonth, mobilenumber = :mobilenumber 
-                                WHERE email = :email");
-
-        if (!$stmt) {
-            throw new Exception("Failed to prepare the SQL statement.");
-        }
-
-        // Bind the parameters
-        $stmt->bindParam(':birthday', $birthday);
-        $stmt->bindParam(':location', $location);
-        $stmt->bindParam(':age', $age);
-        $stmt->bindParam(':birthmonth', $birthmonth);
-        $stmt->bindParam(':mobilenumber', $mobilenumber);
-        $stmt->bindParam(':email', $email);
-
-        // Execute the update query
-        if ($stmt->execute()) {
-            echo "<div class='success-message'>Account settings updated successfully!</div>";
-        } else {
-            throw new Exception("Failed to execute update query.");
-        }
-    } catch (Exception $e) {
-        echo "<div class='error-message'>Error updating account settings: " . $e->getMessage() . "</div>";
-    }
-}
-
-// Process form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get form data
-    $email = $_POST['email'];
-    $birthday = $_POST['birthday'];
-    $location = $_POST['location'];
-    $age = $_POST['age'];
-    $birthmonth = $_POST['birthmonth'];
-    $mobilenumber = $_POST['mobilenumber'];
-
-    // Fetch user data
-    $user = fetchUserData($email, $conn);
-
-    if ($user) {
-        // Update account settings
-        updateAccountSettings($email, $birthday, $location, $age, $birthmonth, $mobilenumber, $conn);
-    } else {
-        echo "<div class='error-message'>User not found.</div>";
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -88,102 +7,242 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Account Settings</title>
     <style>
         /* General styling */
+        /* General styling */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7fa;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    font-family: 'Homemade Apple', Arial, sans-serif;
+    background: linear-gradient(135deg, #111, #333); /* Gradient background */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+    flex-direction: column;
+    animation: fadeIn 1s ease-out;
+    overflow: hidden;
+}
 
-        .container {
-            background-color: #fff;
-            padding: 40px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            width: 100%;
-            max-width: 500px;
-        }
+.container {
+    background-color: #444;
+    padding: 25px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    width: 100%;
+    max-width: 600px;
+    opacity: 0;
+    animation: slideIn 1s forwards 0.5s;
+    transform: scale(0.95);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+.container:hover {
+    transform: translateY(-5px); /* Similar to the "Back to Dashboard" button */
+    box-shadow: 0 8px 30px rgba(231, 76, 60, 0.5); /* Shadow similar to button */
+}
+    
 
-        label {
-            font-size: 14px;
-            margin-bottom: 5px;
-            display: block;
-        }
 
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ff4747;
+    font-size: 30px;
+    font-weight: bold;
+    animation: slideInFromLeft 1s ease-out;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 
-        input[type="range"] {
-            width: 100%;
-        }
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+    color: #e74c3c;
+    font-weight: bold;
+}
 
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #6c63ff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #5752f3;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background-color: #ddd;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            width: 0%;
-            background-color: #6c63ff;
-            transition: width 0.3s;
-        }
-
-        .step {
-            display: none;
-        }
-
-        .step.active {
-            display: block;
-        }
-        .back-button {
-    padding: 10px;
-    background-color: #ccc;
-    color: #333;
-    border: none;
-    border-radius: 5px;
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #444;
+    color: #fff;
     font-size: 16px;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+input:focus, select:focus {
+    background-color: #555;
+    outline: none;
+    transform: translateY(-2px);
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.7);
+}
+
+input[type="range"] {
+    width: 100%;
+    margin: 20px 0;
+    height: 6px;
+    border-radius: 10px;
+    background-color: #555;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    background-color: #e74c3c;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    transition: background-color 0.3s ease;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+    background-color: #c0392b;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeInButton 1s forwards;
+    transform: translateY(20px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+
+button:active {
+    transform: translateY(2px);
+}
+
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #555;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: #e74c3c;
+    transition: width 0.3s ease;
+    border-radius: 5px;
+}
+
+.step {
+    display: none;
+    opacity: 0;
+    animation: fadeInStep 1s forwards;
+}
+
+.step.active {
+    display: block;
+    animation: fadeInStep 1s forwards;
+}
+
+.back-button {
+    padding: 12px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
     width: 100%;
-    text-align: center;
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeInButton 1s forwards 1.5s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .back-button:hover {
-    background-color: #bbb;
+    background-color: #444;
+    transform: translateY(-5px);
+}
+
+.back-button:active {
+    transform: translateY(2px);
+}
+
+/* Back to Dashboard Button Styling */
+.back-to-dashboard {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.back-to-dashboard button {
+    padding: 12px 25px;
+    font-size: 18px;
+    background-color: #ff4747;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    animation: slideIn 1s forwards 0.8s;
+    transition: background-color 0.5s, transform 0.5s ease, box-shadow 0.5s ease;
+    font-weight: bold;
+}
+
+.back-to-dashboard button:hover {
+    background-color: #c0392b;
+    transform: scale(1.05); /* Slight scale effect on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+
+/* Animations */
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes fadeInText {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    0% { transform: translateY(50px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInButton {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInStep {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+input:invalid {
+    border: 2px solid #e74c3c;
+    animation: shake 0.4s ease-in-out;
 }
 
     </style>
@@ -231,11 +290,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="step">
                 <label for="mobilenumber">Mobile Number:</label>
                 <label for="country">Country:</label>
-<select id="country" name="country">
-    <option value="PH">Philippines (+63)</option>
-    <option value="US">United States (+1)</option>
-    <option value="IN">India (+91)</option>
-</select>
+                <select id="country" name="country">
+                    <option value="PH">Philippines (+63)</option>
+                    <option value="US">United States (+1)</option>
+                    <option value="IN">India (+91)</option>
+                </select>
 
                 <input type="text" id="mobilenumber" name="mobilenumber" placeholder="Enter your mobile number" required>
 
@@ -247,10 +306,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </form>
     </div>
-  <!-- Add a Back button to go to the dashboard -->
-  <a href="../dashboard/dashboard.php">
-        <button type="button" style="background-color: #ccc; color: #333;">Back to Dashboard</button>
-    </a>
+
+    <!-- Add a Back button to go to the dashboard, positioned below the container -->
+    <div class="back-to-dashboard">
+        <button onclick="window.location.href='../dashboard/dashboard.php'">Back to Dashboard</button>
+    </div>
+
+
     <script>
         let currentStep = 0;
         const steps = document.querySelectorAll('.step');
@@ -286,62 +348,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ageValue.textContent = value;
         }
 
-        function calculateAge(birthdate) {
-            const today = new Date();
-            const birthDate = new Date(birthdate);
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-
-            return age;
-        }
-
         function syncAgeWithBirthday() {
-            const birthdate = birthdayInput.value;
-            if (birthdate) {
-                const age = calculateAge(birthdate);
-                ageSlider.value = age;
-                updateAgeValue(age);
-            }   
+            const birthday = new Date(birthdayInput.value);
+            const age = new Date().getFullYear() - birthday.getFullYear();
+            ageSlider.value = age;
+            updateAgeValue(age);
         }
-        const countryCodePatterns = {
-            'PH': /^\+63\d{10}$/, // Philippines: +63 followed by 10 digits
-            'US': /^\+1\d{10}$/,  // USA: +1 followed by 10 digits
-            'IN': /^\+91\d{10}$/  // India: +91 followed by 10 digits
-        };
-
-        document.getElementById('mobilenumber').addEventListener('input', function () {
-            const mobileNumber = this.value;
-            const selectedCountry = document.getElementById('country').value; // Assuming a country dropdown
-            
-            if (!countryCodePatterns[selectedCountry].test(mobileNumber)) {
-                this.setCustomValidity(`Enter a valid mobile number for ${selectedCountry}`);
-            } else {
-                this.setCustomValidity('');
-            }
-        });
-        birthdayInput.addEventListener('change', function () {
-    const today = new Date();
-    const birthDate = new Date(this.value);
-    const age = calculateAge(this.value);
-
-    if (birthDate > today) {
-        alert('Birthdate cannot be in the future.');
-        this.value = '';
-    } else if (age < 18) {
-        alert('You must be at least 18 years old.');
-        this.value = '';
-    }
-});
-
-
-        document.getElementById('accountForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            alert('Account settings updated successfully!');
-        });
     </script>
 </body>
 </html>
