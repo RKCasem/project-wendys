@@ -18,6 +18,7 @@ function calculate_days($currentYear, $currentMonth) {
     return [$firstDay, $lastDay];
 }
 
+
 // Fetch subscriptions
 $subscriptions = fetch_subscriptions($conn);
 
@@ -43,22 +44,286 @@ $firstDayOfWeek = date('w', $firstDay);
 $theme = isset($_GET['theme']) ? $_GET['theme'] : 'dark';  // Default theme is 'light'
 ?>
 <!DOCTYPE html>
-<html lang="en">    
+<html lang="en">      
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subscription Calendar</title>
-    <link rel="stylesheet" href="styless.css">
+    <style>
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.944);
+}
+
+.dark-mode-toggle {
+    cursor: pointer;
+    background-color: #656565;
+    border: #ff4747;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    color: rgba(255, 255, 255, 0.944);
+
+}
+
+.dark-mode-toggle:hover {
+    background-color: #ff4747;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
+    grid-gap: 10px;
+    width: 100%;
+    margin-top: 20px;
+    color: white;
+
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    font-weight: bold;
+    background-color: #4b4b4b;
+    padding: 10px 0;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.calendar-day,
+.calendar-weekday {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    position: relative;
+    background-color: #ff4747;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.calendar-day.highlight,
+.calendar-weekday.highlight {
+    background-color: #bebdb8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.calendar-day .subscription-info,
+.calendar-weekday .subscription-info {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    font-size: 10px;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 3px;
+    border-radius: 3px;
+    display: none;
+    }
+    
+    .calendar-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-size: 16px;
+        
+    }
+    
+    .calendar-nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        background-color: #656565;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .calendar-nav a:hover {
+        background-color: #ff4747;
+    }
+    
+    .view-picker {
+        margin-bottom: 20px;
+    }
+    
+    .view-picker select {
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ff4747;
+        background-color: #535353;
+        color: white;
+    }
+    
+    /* Year View */
+    .calendar-year {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .calendar-month {
+        padding: 20px;
+        background-color: #48494b;
+        border: 1px solid #ff4747;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .calendar-month:hover {
+        background-color: #bebdb8;
+    }
+    
+    /* Week View */
+    .calendar-week {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-gap: 10px;
+        width: 100%;
+    }
+    /* Sidebar styling */
+     
+ .sidebar { position: fixed; right: 0; top: 0; width: 300px; height: 100%;
+     background-color: #f1f1f1; box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+      padding: 20px; overflow-y: auto; z-index: 1000; transform: translateX(100%);
+       transition: transform 0.3s ease; }
+.sidebar.show {
+    display: block;
+    transform: translateX(0);
+}
+
+.sidebar h3 {
+    margin-top: 0;
+}
+
+.close-btn { background-color: #444;
+     color: #48494b; border: none;
+      padding: 10px 20px; cursor:
+       pointer; display: block; width: 
+       100%; margin-top: 20px; text-align: center; }
+
+.close-btn:hover {
+    background-color: #666;
+}
+
+.subscription-info { margin: 10px 0; padding: 10px; border: 
+    1px solid #ddd; background-color: #48494b; border-radius: 5px}
+.highlight { background-color: blue; /* Highlight color */ }
+/* Smooth transition for theme change */
+
+body {
+    transition: background-color 0.5s ease, color 0.5s ease-in-out;
+}
+
+/* Example dark mode styles */
+body.dark {
+    background-color: #333;
+    color: #f1f1f1;
+}
+
+/* Example light mode styles */
+body.light {
+    background-color:rgb(220, 220, 220);
+    color: #000000;
+}  
+/* General styles for the calendar days */
+/* Calendar Days */
+.calendar-day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    background-color: #48494b;
+    border: 1px solid #ff4747   ;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Highlight the day if it has a subscription */
+.calendar-day.highlight {
+    background-color: calc(25,10,25); /* Highlight color */
+    transform: scale(1); /* Slightly enlarge the day */
+    box-shadow: 0 0 10px rgba(255, 71, 71, 0.6); /* Add a subtle glow effect */
+}
+
+/* Calendar Days Hover Effect */
+.calendar-day:hover {
+    background-color: #bebdb8;
+    transform: scale(1.05);
+    box-shadow: 0 0 5px rgba(255, 71, 71, 0.6);
+}
+
+/* Show subscription info on hover or click */
+.calendar-day.highlight:hover .subscription-info,
+.calendar-day.highlight:focus .subscription-info {
+    display: inline-block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Fade-in animation for subscription info */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@media (max-width: 480px) {
+    .calendar {
+        grid-template-columns: repeat(4, 1fr); /* 4 columns on very small screens */
+    }
+
+    .calendar-header {
+        font-size: 12px;
+    }
+
+    .calendar-day {
+        padding: 8px;
+    }
+}
+/* Responsive Calendar */
+@media (max-width: 768px) {
+    .calendar {
+        grid-template-columns: repeat(5, 1fr); /* 5 columns on smaller screens */
+    }
+
+    .calendar-header {
+        font-size: 14px;
+    }
+
+    .calendar-day {
+        padding: 10px;
+    }
+}
+
+    </style>
     <script>
         // Embed PHP variables into JavaScript
         let currentMonth = <?php echo json_encode($currentMonth); ?>;
         let currentYear = <?php echo json_encode($currentYear); ?>;
         let theme = "<?php echo htmlspecialchars($theme, ENT_QUOTES, 'UTF-8'); ?>";
+        function goToSubscriptions() {
+            window.location.href = "../subscription/subscription_transaction.php"; // Update the URL if necessary
+        }
     </script>
 </head>
 <body class="<?php echo htmlspecialchars($theme, ENT_QUOTES, 'UTF-8'); ?>">
+<button class="subscription-button" id="calendar" onclick="goToSubscriptions()">Go to Subscriptions</button>
+
 <div id="calendar" class="tab-content active">
-<h2>calendar</h2>
+<h2>Calendar</h2>
     <div class="container">
         <div class="header">
             <h1><?php echo $viewType == 'month' ? $monthName . ' ' . $currentYear : ($viewType == 'year' ? 'Year ' . $currentYear : 'Week ' . $currentWeek); ?></h1>
@@ -114,13 +379,13 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'dark';  // Default theme is '
         <!-- Calendar Header (Day names for month and week views) -->
         <?php if ($viewType == 'month' || $viewType == 'week') : ?>
             <div class="calendar-header">
-                <div>Sun</div>
-                <div>Mon</div>
-                <div>Tue</div>
-                <div>Wed</div>
-                <div>Thu</div>
-                <div>Fri</div>
-                <div>Sat</div>
+                <div>Sunday</div>
+                <div>Monday</div>
+                <div>Tuesday</div>
+                <div>Wednesday</div>
+                <div>Thursday</div>
+                <div>Friday</div>
+                <div>Saturday</div>
             </div>
         <?php endif; ?>
 
