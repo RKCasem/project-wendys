@@ -18,6 +18,7 @@ function calculate_days($currentYear, $currentMonth) {
     return [$firstDay, $lastDay];
 }
 
+
 // Fetch subscriptions
 $subscriptions = fetch_subscriptions($conn);
 
@@ -43,26 +44,462 @@ $firstDayOfWeek = date('w', $firstDay);
 $theme = isset($_GET['theme']) ? $_GET['theme'] : 'dark';  // Default theme is 'light'
 ?>
 <!DOCTYPE html>
-<html lang="en">    
+<html lang="en">      
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subscription Calendar</title>
-    <link rel="stylesheet" href="styless.css">
+    <style>
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.944);
+}
+
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
+    grid-gap: 10px;
+    width: 100%;
+    margin-top: 20px;
+    color: white;
+
+}
+
+.calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    font-weight: bold;
+    background-color: #4b4b4b;
+    padding: 10px 0;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.calendar-day,
+.calendar-weekday {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    position: relative;
+    background-color: #ff4747;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+.calendar-day.highlight,
+.calendar-weekday.highlight {
+    background-color: #bebdb8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.calendar-day .subscription-info,
+.calendar-weekday .subscription-info {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    font-size: 10px;
+    color: #333;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 3px;
+    border-radius: 3px;
+    display: none;
+    }
+    
+    .calendar-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-size: 16px;
+        
+    }
+    
+    .calendar-nav a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        background-color: #656565;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .calendar-nav a:hover {
+        background-color: #ff4747;
+    }
+    
+    .view-picker {
+        margin-bottom: 20px;
+    }
+    
+    .view-picker select {
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ff4747;
+        background-color: #535353;
+        color: white;
+    }
+    
+    /* Year View */
+    .calendar-year {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 20px;
+        margin-top: 20px;
+    }
+    
+    .calendar-month {
+        padding: 20px;
+        background-color: #48494b;
+        border: 1px solid #ff4747;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .calendar-month:hover {
+        background-color: #bebdb8;
+    }
+    
+    /* Week View */
+    .calendar-week {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-gap: 10px;
+        width: 100%;
+    }
+    /* Sidebar styling */
+     
+        .sidebar { 
+            position: fixed; 
+            right: 0; 
+            top: 0; 
+            width: 300px; 
+            height: 100%;
+            background-color: #4b4b4b; 
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+            padding: 20px; 
+            overflow-y: auto; 
+            z-index: 1000; 
+            transform: translateX(100%);
+            transition: transform 0.3s ease; 
+
+        }
+            
+        .sidebar.show {
+            display: block;
+            transform: translateX(0);
+        }
+
+        .sidebar h3 {
+            margin-top: 0;
+        }
+
+        .close-btn { 
+            background-color: #ff4747;
+            color: rgb(237, 236, 236); 
+            border: 1px;
+            padding: 10px 20px; 
+            cursor: pointer; 
+            display: block; 
+            width: 100%; 
+            margin-top: 20px; 
+            text-align: center; 
+        
+        }
+
+        .close-btn:hover {
+            background-color: #666;
+        }
+
+        .subscription-info { 
+            margin: 10px 0; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            background-color: #48494b; 
+            border-radius: 5px
+        }
+        .highlight { 
+            background-color: blue; /* Highlight color */ }
+        /* Smooth transition for theme change */
+
+        body {
+            transition: background-color 0.5s ease, color 0.5s ease-in-out;
+        }
+
+        /* Example dark mode styles */
+        body.dark {
+            background-color: #333;
+            color: #f1f1f1;
+        }
+
+        /* General styles for the calendar days */
+        /* Calendar Days */
+
+        #menu {
+            position: fixed; /* Keep the menu fixed */
+            top: 50%; /* Center vertically within the viewport */
+            left: 20px; /* Align slightly from the left */
+            transform: translateY(30%); /* Adjust position for accurate centering */
+            z-index: 2;
+        }
+
+        #menu-bar {
+            width: 50px;
+            height: 40px;
+            margin-left: 25px;
+            margin-top: 10px; /* Remove extra margin to prevent offset */
+            cursor: pointer;
+        }
+        .menu-bg {
+            position: fixed;
+            top: 50%; /* Match the menu's vertical alignment */
+            left: 50px;
+            transform: translateY(-30%);
+            width: 0; /* Initial size */
+            height: 0; /* Initial size */
+            background: radial-gradient(circle, #DC052D, #DC052D);
+            border-radius: 100%;
+            z-index: 1;
+            transition: 0.3s ease;
+        }
+
+        .menu-bg.change-bg {
+            width: 800px; /* Increased size */
+            height: 550px; /* Increased size */
+            transform: translate(-70%, -12%); /* Adjust centering as needed */
+        }
+
+
+        .menu-bg, #menu {
+            top: 0;
+            left: 0;
+            position: absolute;
+        }        
+        .bar {
+            height: 5px;
+            width: 100%;
+            background-color: #DC052D;
+            display: block;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+
+        #bar1 {
+            transform: translateY(-4px);
+        }
+
+        #bar3 {
+            transform: translateY(4px);
+        }
+
+        .nav {
+            transition: 0.3s ease;
+            display: none;
+        }
+
+        .nav ul {
+            padding: 0 22px;
+        }
+
+        .nav li {
+            list-style: none;
+            padding: 12px 0;
+        }
+
+        .nav li a {
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+        }
+
+        .nav li a:hover {
+            font-weight: bold;
+        }
+
+        .change {
+            display: block;
+        }
+
+        .change .bar {
+            background-color: white;
+        }
+
+        .change #bar1 {
+            transform: translateY(4px) rotateZ(-45deg);
+        }
+
+        .change #bar2 {
+            opacity: 0;
+        }
+
+        .change #bar3 {
+            transform: translateY(-6px) rotateZ(45deg);
+        }
+
+        .change-bg {
+            width: 520px;
+            height: 460px;
+            transform: translate(-60%,-30%);
+        }
+
+
+        /* Consistent Section Styling */
+        .content-section {
+            display: none;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+.calendar-day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 15px;
+    background-color: #48494b;
+    border: 1px solid #ff4747   ;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Highlight the day if it has a subscription */
+.calendar-day.highlight {
+    background-color: calc(25,10,25); /* Highlight color */
+    transform: scale(1); /* Slightly enlarge the day */
+    box-shadow: 0 0 10px rgba(255, 71, 71, 0.6); /* Add a subtle glow effect */
+}
+
+/* Calendar Days Hover Effect */
+.calendar-day:hover {
+    background-color: #bebdb8;
+    transform: scale(1.05);
+    box-shadow: 0 0 5px rgba(255, 71, 71, 0.6);
+}
+
+/* Show subscription info on hover or click */
+.calendar-day.highlight:hover .subscription-info,
+.calendar-day.highlight:focus .subscription-info {
+    display: inline-block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Fade-in animation for subscription info */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@media (max-width: 480px) {
+    .calendar {
+        grid-template-columns: repeat(4, 1fr); /* 4 columns on very small screens */
+    }
+
+    .calendar-header {
+        font-size: 12px;
+    }
+
+    .calendar-day {
+        padding: 8px;
+    }
+}
+/* Responsive Calendar */
+@media (max-width: 768px) {
+    .calendar {
+        grid-template-columns: repeat(5, 1fr); /* 5 columns on smaller screens */
+    }
+
+    .calendar-header {
+        font-size: 14px;
+    }
+
+    .calendar-day {
+        padding: 10px;
+    }
+}
+
+    .tab-content {
+        margin-top: 60px;
+        margin-left: 17px;
+        margin-right: 17px;
+    }
+
+    </style>
     <script>
         // Embed PHP variables into JavaScript
         let currentMonth = <?php echo json_encode($currentMonth); ?>;
         let currentYear = <?php echo json_encode($currentYear); ?>;
         let theme = "<?php echo htmlspecialchars($theme, ENT_QUOTES, 'UTF-8'); ?>";
+        // function goToSubscriptions() {
+        //     window.location.href = "../subscription/subscription_transaction.php"; // Update the URL if necessary
+        // }
+
+
+        function showSection(section) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+        }
+
+        function menuOnClick() {
+            const menu = document.getElementById("nav");
+            const menuBar = document.getElementById("menu-bar");
+            const menuBg = document.getElementById("menu-bg");
+
+            menu.classList.toggle("change");
+            menuBar.classList.toggle("change");
+            menuBg.classList.toggle("change-bg");
+            menu.style.display = menu.classList.contains("change") ? "block" : "none";
+                document.addEventListener('DOMContentLoaded', () => {
+                // Reapply event listeners if dynamic content is loaded
+                document.getElementById('menu-bar').addEventListener('click', menuOnClick);
+                });
+        }
     </script>
 </head>
 <body class="<?php echo htmlspecialchars($theme, ENT_QUOTES, 'UTF-8'); ?>">
+<!-- <button class="subscription-button" id="calendar" onclick="goToSubscriptions()">Go to Subscriptions</button> -->
+
+<div id="menu">
+        <div id="menu-bar" onclick="menuOnClick()">
+            <div id="bar1" class="bar"></div>
+            <div id="bar2" class="bar"></div>
+            <div id="bar3" class="bar"></div>
+        </div>
+        <nav class="nav" id="nav">
+            <ul>
+                <li><a href="../dashboard/dashboard.php" onclick="showSection('dashboard')">Home</a></li>
+                <li><a href="../subscription/subscription_transaction.php" onclick="showSection('transactions')">Billing Information</a></li>
+                <li><a href="../account-settings/settings.php" onclick="showSection('account-settings')">Account Settings</a></li>
+                <li><a href="#logout" onclick="showSection('logout')">Log Out</a></li>
+            </ul>
+        </nav> 
+    </div>
+    <div class="menu-bg" id="menu-bg"></div>
+
 <div id="calendar" class="tab-content active">
-<h2>calendar</h2>
+<h2>Calendar</h2>
     <div class="container">
         <div class="header">
             <h1><?php echo $viewType == 'month' ? $monthName . ' ' . $currentYear : ($viewType == 'year' ? 'Year ' . $currentYear : 'Week ' . $currentWeek); ?></h1>
-            <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+          
         </div>
         
         <div class="calendar-nav">
@@ -99,6 +536,7 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'dark';  // Default theme is '
                 echo '<a href="calendar.php?view=week&week=' . $nextWeek . '&year=' . $nextYear . '&theme=' . $theme . '">Next</a>';
             }
             ?>
+            
         </div>
 
         <!-- View Selector -->
@@ -114,13 +552,13 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'dark';  // Default theme is '
         <!-- Calendar Header (Day names for month and week views) -->
         <?php if ($viewType == 'month' || $viewType == 'week') : ?>
             <div class="calendar-header">
-                <div>Sun</div>
-                <div>Mon</div>
-                <div>Tue</div>
-                <div>Wed</div>
-                <div>Thu</div>
-                <div>Fri</div>
-                <div>Sat</div>
+                <div>Sunday</div>
+                <div>Monday</div>
+                <div>Tuesday</div>
+                <div>Wednesday</div>
+                <div>Thursday</div>
+                <div>Friday</div>
+                <div>Saturday</div>
             </div>
         <?php endif; ?>
 
@@ -224,106 +662,78 @@ echo '</div>';
 
 
 <script>
-let outsideClickListenerAdded = false;
+    let outsideClickListenerAdded = false;
 
-function showDetails(date) {
-    const sidebar = document.getElementById('sidebar');
-    const subscriptionList = document.getElementById('subscription-list');
-    
-    // Fetch subscription details from PHP or database
-    fetch('fetch_subscriptions.php?date=' + date)
-        .then(response => response.json())
-        .then(data => {
-            subscriptionList.innerHTML = ''; // Clear previous details
-            if (data.length > 0) {
-                data.forEach(item => {
+    function showDetails(date) {
+        const sidebar = document.getElementById('sidebar');
+        const subscriptionList = document.getElementById('subscription-list');
+        
+        // Fetch subscription details from PHP or database
+        fetch('fetch_subscriptions.php?date=' + date)
+            .then(response => response.json())
+            .then(data => {
+                subscriptionList.innerHTML = ''; // Clear previous details
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<div class="subscription-info">
+                                        <strong>${item.name}</strong><br>
+                                        Amount: ${item.amount}<br>
+                                        Start: ${item.start_date}<br>
+                                        End: ${item.end_date}
+                                        </div>`;
+                        subscriptionList.appendChild(li);
+                    });
+                } else {
                     const li = document.createElement('li');
-                    li.innerHTML = `<div class="subscription-info">
-                                      <strong>${item.name}</strong><br>
-                                      Amount: ${item.amount}<br>
-                                      Start: ${item.start_date}<br>
-                                      End: ${item.end_date}
-                                    </div>`;
+                    li.textContent = 'No subscriptions found for this date.';
                     subscriptionList.appendChild(li);
-                });
-            } else {
-                const li = document.createElement('li');
-                li.textContent = 'No subscriptions found for this date.';
-                subscriptionList.appendChild(li);
-            }
-        });
+                }
+            });
 
-    sidebar.classList.add('show');
-    sidebar.classList.remove('hide');
-    
-    // Add outside click listener only once
-    if (!outsideClickListenerAdded) {
-        document.addEventListener('click', outsideClickListener);
-        outsideClickListenerAdded = true;
+        sidebar.classList.add('show');
+        sidebar.classList.remove('hide');
+        
+        // Add outside click listener only once
+        if (!outsideClickListenerAdded) {
+            document.addEventListener('click', outsideClickListener);
+            outsideClickListenerAdded = true;
+        }
     }
-}
 
-function outsideClickListener(event) {
-    const sidebar = document.getElementById('sidebar');
-    if (!sidebar.contains(event.target) && !event.target.matches('.calendar-day, .calendar-weekday')) {
-        closeSidebar();
+    function outsideClickListener(event) {
+        const sidebar = document.getElementById('sidebar');
+        if (!sidebar.contains(event.target) && !event.target.matches('.calendar-day, .calendar-weekday')) {
+            closeSidebar();
+        }
     }
-}
 
-function closeSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.add('hide');
-    sidebar.classList.remove('show');
+    function closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.add('hide');
+        sidebar.classList.remove('show');
 
-    // Remove outside click listener after closing the sidebar
-    document.removeEventListener('click', outsideClickListener);
-    outsideClickListenerAdded = false;
-}
-
-// Change view (year, month, week)
-function changeView(view) {
-    window.location.href = 'calendar.php?view=' + view + '&month=' + currentMonth + '&year=' + currentYear + '&theme=' + theme;
-}
-
-// Change month in year view
-function changeMonth(month) {
-    window.location.href = 'calendar.php?view=month&month=' + month + '&year=' + currentYear + '&theme=' + theme;
-}
-
-// Toggle dark mode
-function toggleDarkMode() {
-    const body = document.body;
-    const currentTheme = body.classList.contains('dark') ? 'dark' : 'light';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-    // Apply the new theme
-    body.classList.remove(currentTheme);
-    body.classList.add(newTheme);
-
-    // Update URL parameter to persist theme
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('theme', newTheme);
-    window.history.replaceState({}, '', `${location.pathname}?${urlParams}`);
-
-    // Save the new theme to local storage
-    localStorage.setItem('theme', newTheme);
-}
-
-// Initialize the theme on page load
-function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to light theme if no preference is saved
-    document.body.classList.add(savedTheme);
-
-    // Update the URL parameter to reflect the current theme
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('theme') !== savedTheme) {
-        urlParams.set('theme', savedTheme);
-        window.history.replaceState({}, '', `${location.pathname}?${urlParams}`);
+        // Remove outside click listener after closing the sidebar
+        document.removeEventListener('click', outsideClickListener);
+        outsideClickListenerAdded = false;
     }
-}
 
-// Call initializeTheme on page load
-document.addEventListener('DOMContentLoaded', initializeTheme);
+    // Change view (year, month, week)
+    function changeView(view) {
+        window.location.href = 'calendar.php?view=' + view + '&month=' + currentMonth + '&year=' + currentYear + '&theme=' + theme;
+    }
+
+    // Change month in year view
+    function changeMonth(month) {
+        window.location.href = 'calendar.php?view=month&month=' + month + '&year=' + currentYear + '&theme=' + theme;
+    }
+
+
+    // Initialize the theme on page load
+
+
+    // Call initializeTheme on page load
+    document.addEventListener('DOMContentLoaded', initializeTheme);
 
 </script>
     </body>
