@@ -1,60 +1,3 @@
-<?php
-session_start();
-include '../db.php'; // Database connection file
-
-// Database connection settings
-$servername = "localhost";  // Typically 'localhost' for XAMPP
-$username = "root";         // Default username for XAMPP MySQL
-$password = "";             // Default password for XAMPP MySQL (empty by default)
-$dbname = "mydatabase";     // Your database name
-
-// Create a connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check the connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    // Prepare the SQL query to fetch the user by email
-    $sql = "SELECT * FROM users WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);  // 's' indicates the type (string)
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Check if a user with the provided email exists
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-
-        // Check if the provided password matches the stored password
-        if (password_verify($password, $user['password'])) {
-            // Set session variables
-            $_SESSION['userLoggedIn'] = true;
-            $_SESSION['userEmail'] = $user['email'];
-
-            // Redirect to the dashboard
-            header("Location: ../dashboard/dashboard.php");
-            exit();
-        } else {
-            // If the password doesn't match
-            echo "<p style='color:red;'>Invalid email or password!</p>";
-        }
-    } else {
-        // If no user is found with the given email
-        echo "<p style='color:red;'>Invalid email or password!</p>";
-    }
-
-    // Close the statement and the connection
-    $stmt->close();
-    $conn->close();
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,7 +5,213 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bill n' Chill</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="dashboard_style.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #111;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            margin-left: 0;
+            padding: 20px;
+            transition: margin-left 0.3s ease-in-out;
+        }
+        #menu {
+            position: fixed; /* Keep the menu fixed */
+            top: 50%; /* Center vertically within the viewport */
+            left: 20px; /* Align slightly from the left */
+            transform: translateY(30%); /* Adjust position for accurate centering */
+            z-index: 2;
+        }
+
+        #menu-bar {
+            width: 50px;
+            height: 40px;
+            margin-left: 25px;
+            margin-top: 10px; /* Remove extra margin to prevent offset */
+            cursor: pointer;
+        }
+        .menu-bg {
+            position: fixed;
+            top: 50%; /* Match the menu's vertical alignment */
+            left: 50px;
+            transform: translateY(-30%);
+            width: 0; /* Initial size */
+            height: 0; /* Initial size */
+            background: radial-gradient(circle, #DC052D, #DC052D);
+            border-radius: 100%;
+            z-index: 1;
+            transition: 0.3s ease;
+        }
+
+        .menu-bg.change-bg {
+            width: 800px; /* Increased size */
+            height: 550px; /* Increased size */
+            transform: translate(-70%, -12%); /* Adjust centering as needed */
+        }
+
+
+        .menu-bg, #menu {
+            top: 0;
+            left: 0;
+            position: absolute;
+        }        
+        .bar {
+            height: 5px;
+            width: 100%;
+            background-color: #DC052D;
+            display: block;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+
+        #bar1 {
+            transform: translateY(-4px);
+        }
+
+        #bar3 {
+            transform: translateY(4px);
+        }
+
+        .nav {
+            transition: 0.3s ease;
+            display: none;
+        }
+
+        .nav ul {
+            padding: 0 22px;
+        }
+
+        .nav li {
+            list-style: none;
+            padding: 12px 0;
+        }
+
+        .nav li a {
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+        }
+
+        .nav li a:hover {
+            font-weight: bold;
+        }
+
+        .change {
+            display: block;
+        }
+
+        .change .bar {
+            background-color: white;
+        }
+
+        .change #bar1 {
+            transform: translateY(4px) rotateZ(-45deg);
+        }
+
+        .change #bar2 {
+            opacity: 0;
+        }
+
+        .change #bar3 {
+            transform: translateY(-6px) rotateZ(45deg);
+        }
+
+        .change-bg {
+            width: 520px;
+            height: 460px;
+            transform: translate(-60%,-30%);
+        }
+
+        .btn-outline-light {
+            margin: 5px;
+            color: #fff;
+            border-color: #ff4747;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #ff4747;
+            color: #fff;
+        }
+
+        /* Consistent Section Styling */
+        .content-section {
+            display: none;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Loader */
+        .loader {
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-top: 8px solid #ff4747;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Pagination */
+        .pagination-button {
+            margin: 5px;
+            padding: 8px 15px;
+            background-color: #e44040;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination-button.active,
+        .pagination-button:hover {
+            background-color: #ff4747;
+        }
+
+        /* Consistent article block layout */
+        .content-block {
+            display: flex;
+            margin-bottom: 15px;
+            background-color: #444;
+            border-radius: 8px;
+            padding: 15px;
+            align-items: center;
+        }
+
+        .content-block img {
+            width: 120px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+
+        .content-text {
+            flex-grow: 1;
+        }
+
+        .content-text h5 {
+            margin: 0 0 10px;
+        }
+
+        .content-text p {
+            margin: 0 0 10px;
+        }
+
+        .content-text a {
+            color: #ff4747;
+        }
+    </style>
 </head>
 <body>
     <div id="menu">
@@ -73,10 +222,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
         <nav class="nav" id="nav">
             <ul>
-                <li><a href="#dashboard" onclick="showSection('dashboard')">Home</a></li>
-                <li><a href="#transactions" onclick="redirectToTransactionPage()">Billing Information</a></li>
-                <li><a href="#account-settings" onclick="redirectToAccountSettings()">Account Settings</a></li>
-                <li><a href="#logout" onclick="logout()">Log Out</a></li>
+                <li><a href="../dashboard/dashboard.php" onclick="showSection('dashboard')">Home</a></li>
+                <li><a href="../subscription/subscription_transaction.php" onclick="showSection('transactions')">Billing Information</a></li>
+                <li><a href="../account-settings/settings.php" onclick="showSection('account-settings')">Account Settings</a></li>
+                <li><a href="#logout" onclick="showSection('logout')">Log Out</a></li>
             </ul>
         </nav> 
     </div>
@@ -93,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div id="pagination" class="text-center my-4"></div>
         </section>
 
-
+        <!-- Other sections -->
 
     </main>
     <div class="menu-bg" id="menu-bg"></div>
@@ -245,10 +394,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
 
-        function redirectToTransactionPage() {
-    // Redirect to the subscription transaction page
-    window.location.href = '../subscription/subs.php';
-}
 
 
         function goToPage(page) {
@@ -270,22 +415,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             const sections = document.querySelectorAll('.content-section');
             sections.forEach(s => s.classList.remove('active'));
             document.getElementById(section).classList.add('active');
-            if (section === 'logout') {
-        // Redirect to the logout page (index.php)
-        window.location.href = '../index/index.php';
-    } else {
-        document.getElementById(section).classList.add('active');
-    }
-    
         }
-        function logout() {
-    // Clear session data or any necessary logout process
-    sessionStorage.removeItem('userLoggedIn');
-    localStorage.removeItem('userLoggedIn');
-
-    // Redirect to the login page
-    window.location.href = '../index/index.php';  // Redirect to the login page
-}
 
         function menuOnClick() {
             const menu = document.getElementById("nav");
@@ -297,11 +427,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             menuBg.classList.toggle("change-bg");
             menu.style.display = menu.classList.contains("change") ? "block" : "none";
         }
-        function redirectToAccountSettings() {
-    // Redirect to the account settings page
-    window.location.href = '../account/setting.php';
-}
-
     </script>
 </body>
 </html>
