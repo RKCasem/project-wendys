@@ -58,20 +58,6 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'dark';  // Default theme is '
     color: rgba(255, 255, 255, 0.944);
 }
 
-.dark-mode-toggle {
-    cursor: pointer;
-    background-color: #656565;
-    border: #ff4747;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    color: rgba(255, 255, 255, 0.944);
-
-}
-
-.dark-mode-toggle:hover {
-    background-color: #ff4747;
-}
 
 .calendar {
     display: grid;
@@ -189,51 +175,192 @@ $theme = isset($_GET['theme']) ? $_GET['theme'] : 'dark';  // Default theme is '
     }
     /* Sidebar styling */
      
- .sidebar { position: fixed; right: 0; top: 0; width: 300px; height: 100%;
-     background-color: #f1f1f1; box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-      padding: 20px; overflow-y: auto; z-index: 1000; transform: translateX(100%);
-       transition: transform 0.3s ease; }
-.sidebar.show {
-    display: block;
-    transform: translateX(0);
-}
+        .sidebar { 
+            position: fixed; 
+            right: 0; 
+            top: 0; 
+            width: 300px; 
+            height: 100%;
+            background-color: #4b4b4b; 
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+            padding: 20px; 
+            overflow-y: auto; 
+            z-index: 1000; 
+            transform: translateX(100%);
+            transition: transform 0.3s ease; 
 
-.sidebar h3 {
-    margin-top: 0;
-}
+        }
+            
+        .sidebar.show {
+            display: block;
+            transform: translateX(0);
+        }
 
-.close-btn { background-color: #444;
-     color: #48494b; border: none;
-      padding: 10px 20px; cursor:
-       pointer; display: block; width: 
-       100%; margin-top: 20px; text-align: center; }
+        .sidebar h3 {
+            margin-top: 0;
+        }
 
-.close-btn:hover {
-    background-color: #666;
-}
+        .close-btn { 
+            background-color: #ff4747;
+            color: rgb(237, 236, 236); 
+            border: 1px;
+            padding: 10px 20px; 
+            cursor: pointer; 
+            display: block; 
+            width: 100%; 
+            margin-top: 20px; 
+            text-align: center; 
+        
+        }
 
-.subscription-info { margin: 10px 0; padding: 10px; border: 
-    1px solid #ddd; background-color: #48494b; border-radius: 5px}
-.highlight { background-color: blue; /* Highlight color */ }
-/* Smooth transition for theme change */
+        .close-btn:hover {
+            background-color: #666;
+        }
 
-body {
-    transition: background-color 0.5s ease, color 0.5s ease-in-out;
-}
+        .subscription-info { 
+            margin: 10px 0; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            background-color: #48494b; 
+            border-radius: 5px
+        }
+        .highlight { 
+            background-color: blue; /* Highlight color */ }
+        /* Smooth transition for theme change */
 
-/* Example dark mode styles */
-body.dark {
-    background-color: #333;
-    color: #f1f1f1;
-}
+        body {
+            transition: background-color 0.5s ease, color 0.5s ease-in-out;
+        }
 
-/* Example light mode styles */
-body.light {
-    background-color:rgb(220, 220, 220);
-    color: #000000;
-}  
-/* General styles for the calendar days */
-/* Calendar Days */
+        /* Example dark mode styles */
+        body.dark {
+            background-color: #333;
+            color: #f1f1f1;
+        }
+
+        /* General styles for the calendar days */
+        /* Calendar Days */
+
+        #menu {
+            position: fixed; /* Keep the menu fixed */
+            top: 50%; /* Center vertically within the viewport */
+            left: 20px; /* Align slightly from the left */
+            transform: translateY(30%); /* Adjust position for accurate centering */
+            z-index: 2;
+        }
+
+        #menu-bar {
+            width: 50px;
+            height: 40px;
+            margin-left: 25px;
+            margin-top: 10px; /* Remove extra margin to prevent offset */
+            cursor: pointer;
+        }
+        .menu-bg {
+            position: fixed;
+            top: 50%; /* Match the menu's vertical alignment */
+            left: 50px;
+            transform: translateY(-30%);
+            width: 0; /* Initial size */
+            height: 0; /* Initial size */
+            background: radial-gradient(circle, #DC052D, #DC052D);
+            border-radius: 100%;
+            z-index: 1;
+            transition: 0.3s ease;
+        }
+
+        .menu-bg.change-bg {
+            width: 800px; /* Increased size */
+            height: 550px; /* Increased size */
+            transform: translate(-70%, -12%); /* Adjust centering as needed */
+        }
+
+
+        .menu-bg, #menu {
+            top: 0;
+            left: 0;
+            position: absolute;
+        }        
+        .bar {
+            height: 5px;
+            width: 100%;
+            background-color: #DC052D;
+            display: block;
+            border-radius: 5px;
+            transition: 0.3s ease;
+        }
+
+        #bar1 {
+            transform: translateY(-4px);
+        }
+
+        #bar3 {
+            transform: translateY(4px);
+        }
+
+        .nav {
+            transition: 0.3s ease;
+            display: none;
+        }
+
+        .nav ul {
+            padding: 0 22px;
+        }
+
+        .nav li {
+            list-style: none;
+            padding: 12px 0;
+        }
+
+        .nav li a {
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+        }
+
+        .nav li a:hover {
+            font-weight: bold;
+        }
+
+        .change {
+            display: block;
+        }
+
+        .change .bar {
+            background-color: white;
+        }
+
+        .change #bar1 {
+            transform: translateY(4px) rotateZ(-45deg);
+        }
+
+        .change #bar2 {
+            opacity: 0;
+        }
+
+        .change #bar3 {
+            transform: translateY(-6px) rotateZ(45deg);
+        }
+
+        .change-bg {
+            width: 520px;
+            height: 460px;
+            transform: translate(-60%,-30%);
+        }
+
+
+        /* Consistent Section Styling */
+        .content-section {
+            display: none;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+
+        .content-section.active {
+            display: block;
+        }
 .calendar-day {
     display: flex;
     justify-content: center;
@@ -267,6 +394,43 @@ body.light {
 .calendar-day.highlight:focus .subscription-info {
     display: inline-block;
     animation: fadeIn 0.3s ease-in-out;
+}
+.container {
+    background-color: #444;
+    padding: 30px;
+    border-radius: 20px; /* Larger rounded corners for a softer look */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+    width: 80%;
+    margin: auto;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    transition: box-shadow 0.4s ease, transform 0.4s ease, background-color 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 1s ease-in-out; /* Fade in animation for the container */
+    margin-top: 10px;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.container:hover {
+    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.7);
+    transform: translateY(-15px);
+    background-color: #555;
+}
+
+.container:hover::before {
+    opacity: 0; /* Fade out overlay on hover */
 }
 
 /* Fade-in animation for subscription info */
@@ -308,26 +472,71 @@ body.light {
     }
 }
 
+    .tab-content {
+        margin-top: 10px;
+        margin-left: 80px;
+        margin-right: 17px;
+    }
+
     </style>
     <script>
         // Embed PHP variables into JavaScript
         let currentMonth = <?php echo json_encode($currentMonth); ?>;
         let currentYear = <?php echo json_encode($currentYear); ?>;
         let theme = "<?php echo htmlspecialchars($theme, ENT_QUOTES, 'UTF-8'); ?>";
-        function goToSubscriptions() {
-            window.location.href = "../subscription/subscription_transaction.php"; // Update the URL if necessary
+        // function goToSubscriptions() {
+        //     window.location.href = "../subscription/subscription_transaction.php"; // Update the URL if necessary
+        // }
+
+
+        function showSection(section) {
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+        }
+
+        function menuOnClick() {
+            const menu = document.getElementById("nav");
+            const menuBar = document.getElementById("menu-bar");
+            const menuBg = document.getElementById("menu-bg");
+
+            menu.classList.toggle("change");
+            menuBar.classList.toggle("change");
+            menuBg.classList.toggle("change-bg");
+            menu.style.display = menu.classList.contains("change") ? "block" : "none";
+                document.addEventListener('DOMContentLoaded', () => {
+                // Reapply event listeners if dynamic content is loaded
+                document.getElementById('menu-bar').addEventListener('click', menuOnClick);
+                });
         }
     </script>
 </head>
 <body class="<?php echo htmlspecialchars($theme, ENT_QUOTES, 'UTF-8'); ?>">
-<button class="subscription-button" id="calendar" onclick="goToSubscriptions()">Go to Subscriptions</button>
+<!-- <button class="subscription-button" id="calendar" onclick="goToSubscriptions()">Go to Subscriptions</button> -->
+
+<div id="menu">
+        <div id="menu-bar" onclick="menuOnClick()">
+            <div id="bar1" class="bar"></div>
+            <div id="bar2" class="bar"></div>
+            <div id="bar3" class="bar"></div>
+        </div>
+        <nav class="nav" id="nav">
+            <ul>
+                <li><a href="../dashboard/dashboard.php" onclick="showSection('dashboard')">Home</a></li>
+                <li><a href="../subscription/subs.php" onclick="showSection('transactions')">Billing Information</a></li>
+                <li><a href="../account/setting.php" onclick="showSection('account-settings')">Account Settings</a></li>
+                <li><a href="#logout" onclick="showSection('logout')">Log Out</a></li>
+            </ul>
+        </nav> 
+    </div>
+    <div class="menu-bg" id="menu-bg"></div>
 
 <div id="calendar" class="tab-content active">
 <h2>Calendar</h2>
     <div class="container">
         <div class="header">
             <h1><?php echo $viewType == 'month' ? $monthName . ' ' . $currentYear : ($viewType == 'year' ? 'Year ' . $currentYear : 'Week ' . $currentWeek); ?></h1>
-            <button class="dark-mode-toggle" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+          
         </div>
         
         <div class="calendar-nav">
@@ -364,6 +573,7 @@ body.light {
                 echo '<a href="calendar.php?view=week&week=' . $nextWeek . '&year=' . $nextYear . '&theme=' . $theme . '">Next</a>';
             }
             ?>
+            
         </div>
 
         <!-- View Selector -->
@@ -489,106 +699,78 @@ echo '</div>';
 
 
 <script>
-let outsideClickListenerAdded = false;
+    let outsideClickListenerAdded = false;
 
-function showDetails(date) {
-    const sidebar = document.getElementById('sidebar');
-    const subscriptionList = document.getElementById('subscription-list');
-    
-    // Fetch subscription details from PHP or database
-    fetch('fetch_subscriptions.php?date=' + date)
-        .then(response => response.json())
-        .then(data => {
-            subscriptionList.innerHTML = ''; // Clear previous details
-            if (data.length > 0) {
-                data.forEach(item => {
+    function showDetails(date) {
+        const sidebar = document.getElementById('sidebar');
+        const subscriptionList = document.getElementById('subscription-list');
+        
+        // Fetch subscription details from PHP or database
+        fetch('fetch_subscriptions.php?date=' + date)
+            .then(response => response.json())
+            .then(data => {
+                subscriptionList.innerHTML = ''; // Clear previous details
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<div class="subscription-info">
+                                        <strong>${item.name}</strong><br>
+                                        Amount: ${item.amount}<br>
+                                        Start: ${item.start_date}<br>
+                                        End: ${item.end_date}
+                                        </div>`;
+                        subscriptionList.appendChild(li);
+                    });
+                } else {
                     const li = document.createElement('li');
-                    li.innerHTML = `<div class="subscription-info">
-                                      <strong>${item.name}</strong><br>
-                                      Amount: ${item.amount}<br>
-                                      Start: ${item.start_date}<br>
-                                      End: ${item.end_date}
-                                    </div>`;
+                    li.textContent = 'No subscriptions found for this date.';
                     subscriptionList.appendChild(li);
-                });
-            } else {
-                const li = document.createElement('li');
-                li.textContent = 'No subscriptions found for this date.';
-                subscriptionList.appendChild(li);
-            }
-        });
+                }
+            });
 
-    sidebar.classList.add('show');
-    sidebar.classList.remove('hide');
-    
-    // Add outside click listener only once
-    if (!outsideClickListenerAdded) {
-        document.addEventListener('click', outsideClickListener);
-        outsideClickListenerAdded = true;
+        sidebar.classList.add('show');
+        sidebar.classList.remove('hide');
+        
+        // Add outside click listener only once
+        if (!outsideClickListenerAdded) {
+            document.addEventListener('click', outsideClickListener);
+            outsideClickListenerAdded = true;
+        }
     }
-}
 
-function outsideClickListener(event) {
-    const sidebar = document.getElementById('sidebar');
-    if (!sidebar.contains(event.target) && !event.target.matches('.calendar-day, .calendar-weekday')) {
-        closeSidebar();
+    function outsideClickListener(event) {
+        const sidebar = document.getElementById('sidebar');
+        if (!sidebar.contains(event.target) && !event.target.matches('.calendar-day, .calendar-weekday')) {
+            closeSidebar();
+        }
     }
-}
 
-function closeSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.add('hide');
-    sidebar.classList.remove('show');
+    function closeSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.add('hide');
+        sidebar.classList.remove('show');
 
-    // Remove outside click listener after closing the sidebar
-    document.removeEventListener('click', outsideClickListener);
-    outsideClickListenerAdded = false;
-}
-
-// Change view (year, month, week)
-function changeView(view) {
-    window.location.href = 'calendar.php?view=' + view + '&month=' + currentMonth + '&year=' + currentYear + '&theme=' + theme;
-}
-
-// Change month in year view
-function changeMonth(month) {
-    window.location.href = 'calendar.php?view=month&month=' + month + '&year=' + currentYear + '&theme=' + theme;
-}
-
-// Toggle dark mode
-function toggleDarkMode() {
-    const body = document.body;
-    const currentTheme = body.classList.contains('dark') ? 'dark' : 'light';
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-    // Apply the new theme
-    body.classList.remove(currentTheme);
-    body.classList.add(newTheme);
-
-    // Update URL parameter to persist theme
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('theme', newTheme);
-    window.history.replaceState({}, '', `${location.pathname}?${urlParams}`);
-
-    // Save the new theme to local storage
-    localStorage.setItem('theme', newTheme);
-}
-
-// Initialize the theme on page load
-function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark'; // Default to light theme if no preference is saved
-    document.body.classList.add(savedTheme);
-
-    // Update the URL parameter to reflect the current theme
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('theme') !== savedTheme) {
-        urlParams.set('theme', savedTheme);
-        window.history.replaceState({}, '', `${location.pathname}?${urlParams}`);
+        // Remove outside click listener after closing the sidebar
+        document.removeEventListener('click', outsideClickListener);
+        outsideClickListenerAdded = false;
     }
-}
 
-// Call initializeTheme on page load
-document.addEventListener('DOMContentLoaded', initializeTheme);
+    // Change view (year, month, week)
+    function changeView(view) {
+        window.location.href = 'calendar.php?view=' + view + '&month=' + currentMonth + '&year=' + currentYear + '&theme=' + theme;
+    }
+
+    // Change month in year view
+    function changeMonth(month) {
+        window.location.href = 'calendar.php?view=month&month=' + month + '&year=' + currentYear + '&theme=' + theme;
+    }
+
+
+    // Initialize the theme on page load
+
+
+    // Call initializeTheme on page load
+    document.addEventListener('DOMContentLoaded', initializeTheme);
 
 </script>
     </body>
