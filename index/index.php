@@ -51,24 +51,7 @@
             max-width: 150px;
             height: auto;
         }
-        .contact-us {
-            position: absolute;
-            top: 20px;
-            right: 75px;
-            font-size: 16px;
-            color: white;
-            text-decoration: none;
-            background-color: transparent;
-            border: 2px solid white;
-            padding: 10px 20px;
-            cursor: pointer;
-            z-index: 1000;
-        }
-        .contact-us:hover {
-            background-color: white;
-            color: red;
-            border-color: red;
-        }
+       
         .card {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
@@ -141,8 +124,7 @@
         <img src="../images/mobile-logo.png" alt="Bill n' Chill Logo">
     </div>
 
-    <!-- Contact Us link -->
-    <a href="contact.php" class="contact-us">Contact Us</a>
+
     <div class="card">
         <div class="form-container">
             <!-- Login Form -->
