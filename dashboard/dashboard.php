@@ -223,7 +223,7 @@
         <nav class="nav" id="nav">
             <ul>
                 <li><a href="../dashboard/dashboard.php" onclick="showSection('dashboard')">Home</a></li>
-                <li><a href="../subscription/subs.php" onclick="showSection('transactions')">Billing Information</a></li>
+                <li><a href="../subscription/subscription_transaction.php" onclick="showSection('transactions')">Billing Information</a></li>
                 <li><a href="../account/setting.php" onclick="showSection('account-settings')">Account Settings</a></li>
                 <li><a href="../index/index.php" onclick="showSection('logout')">Log Out</a></li>
             </ul>
